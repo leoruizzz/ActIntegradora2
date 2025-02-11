@@ -1,74 +1,27 @@
 #include "kruskal.h"
-#include <fstream>
-#include <algorithm>
-#include <iostream>
+#include <gtest/gtest.h>
 
-KruskalAlgorithm::KruskalAlgorithm(const std::string& filename) {
-    readGraphFromFile(filename);
-}
+class KruskalTest : public ::testing::Test {
+protected:
+    KruskalAlgorithm* kruskal;
 
-void KruskalAlgorithm::run() {
-    std::sort(graph.edges.begin(), graph.edges.end(), edgeComp);
-
-    std::vector<int> parent(graph.V), rank(graph.V, 0);
-    for (int i = 0; i < graph.V; ++i) {
-        parent[i] = i;
+    void SetUp() override {
+        // Cargar el archivo de prueba y ejecutar el algoritmo
+        kruskal = new KruskalAlgorithm("test_data/kruskal_test.txt");
+        kruskal->run();
     }
 
-    for (auto& edge : graph.edges) {
-        int x = find(parent, edge.src);
-        int y = find(parent, edge.dest);
-        if (x != y) {
-            mst.push_back(edge);
-            unionSet(parent, rank, x, y);
-            if (mst.size() >= graph.V - 1) break;
-        }
+    void TearDown() override {
+        delete kruskal;  // Liberar memoria
     }
+};
+
+TEST_F(KruskalTest, TestTotalWeight) {
+    int expectedWeight = 10; // Define el peso total esperado del MST para tu grafo de prueba
+    ASSERT_EQ(kruskal->getTotalWeight(), expectedWeight);
 }
 
-void KruskalAlgorithm::printResult() const {
-    for (const auto& edge : mst) {
-        std::cout << edge.src << " - " << edge.dest << " : " << edge.weight << std::endl;
-    }
-}
-
-void KruskalAlgorithm::readGraphFromFile(const std::string& filename) {
-    std::ifstream file(filename);
-    int u, v, w;
-    file >> graph.V >> graph.E;
-    while (file >> u >> v >> w) {
-        graph.edges.push_back({u, v, w});
-    }
-}
-
-int KruskalAlgorithm::find(std::vector<int>& parent, int i) {
-    if (parent[i] != i)
-        parent[i] = find(parent, parent[i]);
-    return parent[i];
-}
-
-void KruskalAlgorithm::unionSet(std::vector<int>& parent, std::vector<int>& rank, int x, int y) {
-    int xroot = find(parent, x);
-    int yroot = find(parent, y);
-    if (rank[xroot] < rank[yroot])
-        parent[xroot] = yroot;
-    else if (rank[xroot] > rank[yroot])
-        parent[yroot] = xroot;
-    else {
-        parent[yroot] = xroot;
-        rank[xroot]++;
-    }
-}
-
-// Implementación de las nuevas funciones
-int KruskalAlgorithm::getTotalWeight() const {
-    int totalWeight = 0;
-    for (const auto& edge : mst) {
-        totalWeight += edge.weight;
-    }
-    return totalWeight;
-}
-
-int KruskalAlgorithm::getNumberOfEdges() const {
-    return mst.size();
+TEST_F(KruskalTest, TestNumberOfEdges) {
+    int expectedEdges = 3; // Define el número esperado de aristas en el MST
+    ASSERT_EQ(kruskal->getNumberOfEdges(), expectedEdges);
 }
