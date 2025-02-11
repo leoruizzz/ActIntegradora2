@@ -18,6 +18,11 @@ public:
     explicit KruskalAlgorithm(const std::string& filename);
     void run();
     void printResult() const;
+    
+    // Nuevas funciones
+    int getTotalWeight() const;    // Calcula el peso total del MST
+    int getNumberOfEdges() const;  // Devuelve el número de aristas en el MST
+
 private:
     Graph graph;
     std::vector<Edge> mst;  
