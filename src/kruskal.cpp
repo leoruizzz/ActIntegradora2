@@ -59,3 +59,16 @@ void KruskalAlgorithm::unionSet(std::vector<int>& parent, std::vector<int>& rank
         rank[xroot]++;
     }
 }
+
+// Implementación de las nuevas funciones
+int KruskalAlgorithm::getTotalWeight() const {
+    int totalWeight = 0;
+    for (const auto& edge : mst) {
+        totalWeight += edge.weight;
+    }
+    return totalWeight;
+}
+
+int KruskalAlgorithm::getNumberOfEdges() const {
+    return mst.size();
+}
