@@ -5,7 +5,7 @@ project(ActIntegradora2)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Incluir directorios
+# Incluir directorios para encabezados
 include_directories(include)
 
 # Archivos fuente principales
@@ -20,7 +20,7 @@ set(SOURCES
 # Crear el ejecutable principal
 add_executable(ActIntegradora2 ${SOURCES})
 
-# Configuración de Google Test
+# Configuración de Google Test para pruebas unitarias
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -31,12 +31,17 @@ FetchContent_MakeAvailable(googletest)
 # Habilitar pruebas
 enable_testing()
 
-# Crear el ejecutable para las pruebas
-add_executable(algo_tests tests/test_kruskal.cpp tests/test_tsp.cpp tests/test_ford_fulkerson.cpp tests/test_linear_search.cpp ${SOURCES})
+# Crear el ejecutable para las pruebas unitarias
+add_executable(algo_tests 
+    tests/test_kruskal.cpp 
+    tests/test_tsp.cpp 
+    tests/test_ford_fulkerson.cpp 
+    tests/test_linear_search.cpp
+)
 
-# Vincular Google Test
+# Vincular Google Test con el ejecutable de pruebas
 target_link_libraries(algo_tests gtest gtest_main)
 
-# Registrar las pruebas para ejecución automática
+# Descubrir pruebas automáticamente
 include(GoogleTest)
 gtest_discover_tests(algo_tests)
